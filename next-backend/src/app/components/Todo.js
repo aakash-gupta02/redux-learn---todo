@@ -1,41 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTodos, deleteTodo  } from "../redux/slices/todoSlices";
 
 const Todo = () => {
-  const [todos, settodos] = useState([]);
-
-  const fetchTodos = async () => {
-    try {
-      const res = await axios.get("/api/home");
-      settodos(res.data.todos);
-      console.log("Fetched todos:", res.data.todos);
-    } catch (error) {
-      console.error("Error fetching todos:", error);
-    }
-  };
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todos);
+  console.log("Todos:", todos);
 
   useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`/api/home/${id}`);
-      toast.success("Deleted Successfully");
-    } catch (error) {
-      console.log("Error Deleting Todo: ", error);
-    }
-  };
-
-  const ToggleComplete = async (id) => {
-    try {
-      await axios.put(`/api/home/${id}`);
-      toast.success("Status Chnaged");
-    } catch (error) {
-      console.log("Error Deleting Todo: ", error);
-    }
-  };
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
   return (
     <>
@@ -69,9 +45,7 @@ const Todo = () => {
 
             <td className="py-2 px-4 border-b">
               <button
-                onClick={() => {
-                  handleDelete(todo._id);
-                }}
+                onClick={() => {dispatch(deleteTodo(todo._id)), console.log("Todo deleted:", todo._id)}}
                 className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
               >
                 Delete
@@ -81,7 +55,6 @@ const Todo = () => {
         ))}
     </>
   );
-  ``;
 };
 
 export default Todo;

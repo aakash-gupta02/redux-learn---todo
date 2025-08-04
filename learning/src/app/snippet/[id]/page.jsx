@@ -1,10 +1,11 @@
+import { deleteSnippet } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import React from "react";
 
 const ViewSnippet = async ({ params }) => {
-  const id =  parseInt(params.id, 10);
+  const id = await parseInt(params.id, 10);
 
   const snippet = await prisma.snippet.findUnique({
     where: { id },
@@ -14,13 +15,20 @@ const ViewSnippet = async ({ params }) => {
     return <div className="p-6 text-red-500">Snippet not found.</div>;
   }
 
+  const handleDelete = deleteSnippet.bind(null, snippet.id);
+
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold mb-4">{snippet.title}</h1>
 
         <div className="flex space-x-2">
-          <Button variant="destructive">Delete</Button>
+          <form action={handleDelete}>
+            <Button variant="destructive">Delete</Button>
+          </form>
+
+
           <Link href={`/snippet/${snippet.id}/edit`}>
             <Button>Edit</Button>
           </Link>

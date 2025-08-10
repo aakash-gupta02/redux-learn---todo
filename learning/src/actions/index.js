@@ -63,6 +63,8 @@ export const createSnippet = async (prevState, formData) => {
 
     console.log("Created snippet:", createdSnippet);
 
+    redirect("/")
+
     // Return success state
     return { 
       message: "Snippet created successfully!", 
